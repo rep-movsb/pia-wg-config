@@ -95,9 +95,6 @@ func (p *PIAWgGenerator) generateKeys() (string, string, error) {
 	if err != nil {
 		return "", "", errors.Wrap(err, fmt.Sprintf("failed to generate private key: %v", privateKey.String()))
 	}
-	if p.verbose {
-		log.Println("Private key: ", privateKey)
-	}
 
 	// Call host 'wg pubkey' to generate public key
 	publicKey := privateKey.PublicKey()
@@ -113,6 +110,10 @@ func (p *PIAWgGenerator) generateKeys() (string, string, error) {
 
 // generateConfig
 func (p *PIAWgGenerator) generateConfig(key AddKeyResult, privatekey string) (string, error) {
+	if len(key.DNSServers) == 0 {
+		return "", errors.New("PIA response contained no DNS servers")
+	}
+
 	template, err := template.New("config").Parse(wireguardConfigTemplate)
 	if err != nil {
 		return "", errors.Wrap(err, "error parsing wireguard config template")

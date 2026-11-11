@@ -92,12 +92,40 @@ pia-wg-config [OPTIONS] USERNAME PASSWORD
 **Options:**
 - `-r, --region` - Region to connect to (default: "us_california")
 - `-o, --outfile` - Output file for the config (default: stdout)
+- `-s, --servers-file` - JSON server list; writes one config per WireGuard server
+- `-d, --outdir` - Output directory for `--servers-file` (default: "pia-configs")
+- `-j, --concurrency` - Servers to contact at once with `--servers-file` (default: 8)
 - `-v, --verbose` - Enable verbose output
 - `-h, --help` - Show help
 
 ### Subcommands
 
 - `pia-wg-config regions` - List all available PIA regions
+- `pia-wg-config collect` - Save every server seen in PIA's server list to JSON
+
+### Configs for Many Servers
+
+Each server list response names only one server per region, so `collect` polls
+it over time and saves every server it sees. The list refreshes about once a
+minute. `collect` stops once 60 new responses in a row add nothing, which you
+can change with `--stable-rounds`, `--max-rounds` or `--max-seconds`. It saves
+after every response, so Ctrl-C is safe, and it merges into an existing output
+file unless you pass `--fresh`.
+
+Pass that file to `--servers-file` to get a config for each WireGuard server,
+written to `<outdir>/<region>/<ip>.conf`:
+
+```bash
+pia-wg-config collect -o pia_servers.json
+pia-wg-config -s pia_servers.json -d configs USERNAME PASSWORD
+
+# Only one region from the file
+pia-wg-config -s pia_servers.json -d configs -r uk_london USERNAME PASSWORD
+```
+
+Servers that fail are reported and skipped, and the exit code is non-zero if
+any failed. Each config has its own private key, and files are named by IP so
+that they are valid `wg-quick` interface names.
 
 ## 🌐 Popular Regions
 

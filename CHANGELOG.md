@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- `--servers-file` and `--outdir` to generate one config per WireGuard server in a JSON list, contacting `--concurrency` servers at once
+- `collect` command to build that list by polling PIA's server list
 - `regions` command to list all available PIA regions
 - Enhanced CLI help text to emphasize region configurability
 - `GetAvailableRegions()` method to PIA client
@@ -24,6 +26,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Clarified that regions are NOT hardcoded but configurable via CLI flags
+- Verbose output no longer logs the WireGuard private key
+- `addKey` errors no longer include the token, and requests now time out
 
 ## [Previous Versions]
 

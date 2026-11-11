@@ -51,6 +51,12 @@ Thumbs.db
 wg*.conf
 test-configs/
 
+# Batch output and archives of it (private keys), and collected server lists
+/pia-configs/
+pia-configs*.tgz
+pia-configs*.tar.gz
+*pia_servers.json
+
 # Environment files
 .env
 .env.local
